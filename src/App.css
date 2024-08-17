@@ -4,6 +4,7 @@
   min-height: 100vh;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 .cal-event-container {
@@ -20,6 +21,7 @@
   width: 60%;
   height: 100%;
   border-radius: 1.4rem;
+  user-select: none;
 }
 
 .events {
@@ -28,6 +30,32 @@
   padding: 2rem;
   height: 100%;
   border-radius: 1.4rem;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+}
+
+time {
+  cursor: pointer;
+}
+
+.add-event-btn {
+  background-color: aliceblue;
+  position: fixed;
+  bottom: 4rem;
+  right: 5rem;
+  border-radius: 100%;
+  padding: 0.5rem 0.7rem;
+  box-shadow: 0 0 1rem 0.1rem rgba(128, 128, 128, 0.32);
+}
+
+.flex-class {
+  display: flex;
+
+  align-items: center;
+  gap: 0.5rem;
 }
 
 @media (max-width: 768px) {
@@ -47,13 +75,14 @@
   .events {
     width: 100%;
   }
-}
 
-.icon {
-  width: 22px;
-  height: 22px;
-}
-
-time {
-  cursor: pointer;
+  .add-event-btn {
+    background-color: aliceblue;
+    position: fixed;
+    bottom: 3rem;
+    right: 3rem;
+    border-radius: 100%;
+    padding: 0.5rem 0.7rem;
+    box-shadow: 0 0 1rem 0.1rem rgba(128, 128, 128, 0.32);
+  }
 }

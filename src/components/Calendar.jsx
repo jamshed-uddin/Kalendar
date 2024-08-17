@@ -7,8 +7,10 @@ import {
   format,
   getDay,
   isEqual,
+  isSameDay,
   isWithinInterval,
   parse,
+  parseISO,
   startOfToday,
 } from "date-fns";
 import { useState } from "react";
@@ -91,11 +93,12 @@ const Calendar = () => {
 
               <span
                 className={`${
-                  events.some((event) =>
-                    isWithinInterval(day, {
-                      start: event.startDatetime,
-                      end: event.endDatetime,
-                    })
+                  events.some(
+                    (event) =>
+                      isWithinInterval(day, {
+                        start: event.startDatetime,
+                        end: event.endDatetime,
+                      }) || isSameDay(day, event.startDatetime)
                   ) && marker
                 }`}
               >
