@@ -1,0 +1,94 @@
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.nextPrevBtn {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.daysNameHeader {
+  margin-bottom: 0.3rem;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: 700;
+}
+
+.daysContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 0.3rem;
+}
+
+.dayCell {
+  cursor: pointer;
+  border-radius: 1rem;
+  padding: 1.4rem 0;
+  width: 100%;
+  height: 100%;
+  font-weight: 600;
+}
+
+.selectedCell {
+  background-color: white;
+  font-weight: 900;
+}
+
+.dayCell:hover {
+  background-color: white;
+}
+
+.marker {
+  height: 3px;
+  width: 3px;
+  margin: 0 auto;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.marker > span {
+  height: 3px;
+  width: 3px;
+  background-color: blue;
+  border-radius: 100%;
+  display: block;
+}
+
+.dayTwo {
+  grid-column-start: 2;
+}
+.dayThree {
+  grid-column-start: 3;
+}
+.dayFour {
+  grid-column-start: 4;
+}
+.dayFive {
+  grid-column-start: 5;
+}
+.daySix {
+  grid-column-start: 6;
+}
+.daySeven {
+  grid-column-start: 7;
+}
+
+/* mobile device styles */
+@media (max-width: 768px) {
+  .calendarHeader {
+    margin-bottom: 1rem;
+    padding: 0 0.6rem;
+  }
+  .dayCell {
+    padding: 1rem 0;
+  }
+
+  .dayCell:hover {
+    background-color: inherit;
+  }
+}

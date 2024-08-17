@@ -1,0 +1,14 @@
+.eventsHeader {
+  margin-bottom: 1rem;
+}
+
+.singleEvent {
+  /* border: 2px solid red; */
+  border-radius: 1.4rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.singleEvent:hover {
+  background-color: white;
+}
