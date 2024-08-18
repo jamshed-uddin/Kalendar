@@ -1,5 +1,16 @@
 .eventsHeader {
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.eventsHeader > select {
+  height: fit-content;
+  background-color: aliceblue;
+  border-radius: 8px;
+}
+.eventsHeader > select:focus {
+  outline: 0;
 }
 
 .singleEvent {

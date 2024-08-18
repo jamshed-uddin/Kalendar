@@ -1,0 +1,20 @@
+.eventDetailContainer {
+  margin: 2rem 0 1rem 0;
+}
+
+.eventDetailHeader {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.eventDetailHeader > div {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.eventDetailContainer > p {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+}

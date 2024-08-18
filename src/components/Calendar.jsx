@@ -49,6 +49,7 @@ const Calendar = () => {
 
     setCurrentMonth(format(firstDayOfNextMonth, "MMMM-yyyy"));
   };
+  console.log(daysOfMonth.at(2).toISOString());
 
   return (
     <div>
@@ -84,7 +85,7 @@ const Calendar = () => {
               className={`${dayCell} ${
                 isEqual(day, selectedDate) && selectedCell
               }`}
-              onClick={() => setSelectedDate(day)}
+              onClick={() => setSelectedDate(day?.toISOString())}
             >
               <time dateTime={format(day, "yyyy-MM-dd")}>
                 {format(day, "d")}

@@ -4,9 +4,10 @@ import DatePicker from "react-datepicker";
 import useData from "../hooks/useData";
 import "react-datepicker/dist/react-datepicker.css";
 import { v4 as uuidv4 } from "uuid";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
+import toast, { Toaster } from "react-hot-toast";
 
 const {
   eventFormHeader,
@@ -33,8 +34,11 @@ const tagsArr = [
 ];
 
 const AddEvent = () => {
-  const { selectedDate, setEvents } = useData();
+  const { id } = useParams();
 
+  const { selectedDate, setEvents, getSingleEvent, addEvent, updateEvent } =
+    useData();
+  const [eventLoading, setEventLoading] = useState(false);
   const [eventState, setEventState] = useState({
     title: "",
     startDatetime: selectedDate,
@@ -44,6 +48,17 @@ const AddEvent = () => {
   });
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!id) return;
+    setEventLoading(true);
+    const loadEvent = async () => {
+      const event = await getSingleEvent(id);
+      setEventState(event);
+      setEventLoading(false);
+    };
+    loadEvent();
+  }, [getSingleEvent, id]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEventState((prev) => ({ ...prev, [name]: value }));
@@ -51,7 +66,13 @@ const AddEvent = () => {
 
   const handleDateChange = (date, name) => {
     console.log(date);
-    setEventState((prev) => ({ ...prev, [name]: date }));
+    setEventState((prev) => {
+      if (name === "startDatetime") {
+        return { ...prev, startDatetime: date, endDatetime: date };
+      }
+
+      return { ...prev, [name]: date };
+    });
   };
 
   const formatDate = (date) => {
@@ -63,20 +84,34 @@ const AddEvent = () => {
 
   const submitEventForm = async (e) => {
     e.preventDefault();
-    console.log(eventState);
+
     const newEvent = {
       ...eventState,
       id: uuidv4(),
       startDatetime: formatDate(eventState.startDatetime),
       endDatetime: formatDate(eventState.endDatetime),
     };
-    console.log(newEvent);
-    setEvents((prev) => [...prev, newEvent]);
-    navigate("/", { replace: true });
+
+    try {
+      if (id) {
+        console.log("update");
+        await updateEvent(id, eventState);
+        return navigate("/", { replace: true });
+      } else {
+        console.log("add");
+        await addEvent(eventState);
+        return navigate("/", { replace: true });
+      }
+    } catch (error) {
+      toast.error("Something went wrong! Try again.");
+    }
   };
+
+  console.log(eventState);
 
   return (
     <div>
+      <Toaster />
       <form onSubmit={submitEventForm}>
         {/* event form header */}
         <div className={eventFormHeader}>
@@ -100,6 +135,7 @@ const AddEvent = () => {
             type="text"
             name="title"
             id="title"
+            value={eventState.title}
             placeholder="Add title"
             onChange={handleChange}
             required
@@ -115,12 +151,13 @@ const AddEvent = () => {
             <DatePicker
               id="startDatetime"
               className={datePickerInput}
-              selected={eventState.startDatetime}
+              selected={new Date(eventState.startDatetime)}
               onChange={(date) => handleDateChange(date, "startDatetime")}
-              value={eventState.startDatetime}
+              value={new Date(eventState.startDatetime)}
               timeInputLabel="Time:"
               dateFormat="EEE, dd MMM yyyy h:mm aa"
               showTimeInput
+              minDate={new Date()}
             />
           </div>
 
@@ -131,12 +168,13 @@ const AddEvent = () => {
             <DatePicker
               id="endDatetime"
               className={datePickerInput}
-              selected={eventState.endDatetime}
+              selected={new Date(eventState.endDatetime)}
               onChange={(date) => handleDateChange(date, "endDatetime")}
-              value={eventState.endDatetime}
+              value={new Date(eventState.endDatetime)}
               timeInputLabel="Time:"
               dateFormat="EEE, dd MMM yyyy h:mm aa"
               showTimeInput
+              minDate={new Date(eventState.startDatetime)}
             />
           </div>
 
@@ -149,12 +187,12 @@ const AddEvent = () => {
               name="tag"
               id="tag"
               onChange={handleChange}
-              defaultValue={eventState.tag}
-              defaultChecked={eventState.tag}
+              value={eventState.tag}
               required
             >
+              <option value="">Select tag</option>
               {tagsArr.map((tag) => (
-                <option key={tag} value={tag.toLowerCase()}>
+                <option key={tag} value={tag}>
                   {tag}
                 </option>
               ))}
