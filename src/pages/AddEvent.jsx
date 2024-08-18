@@ -3,8 +3,10 @@ import addEventStyles from "../styles/addEvent.module.css";
 import DatePicker from "react-datepicker";
 import useData from "../hooks/useData";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 const {
   eventFormHeader,
@@ -17,36 +19,60 @@ const {
   descriptionInput,
   titleAndSaveContainer,
 } = addEventStyles;
+const tagsArr = [
+  "Work",
+  "Personal",
+  "Health",
+  "Social",
+  "Meeting",
+  "Appointment",
+  "Family",
+  "Reminder",
+  "Holiday",
+  "Fitness",
+];
 
 const AddEvent = () => {
-  const { selectedDate } = useData();
+  const { selectedDate, setEvents } = useData();
 
   const [eventState, setEventState] = useState({
     title: "",
     startDatetime: selectedDate,
     endDatetime: selectedDate,
-    tag: "",
+    tag: tagsArr.at(0),
     description: "",
   });
+  const navigate = useNavigate();
 
-  console.log(selectedDate);
-  console.log(eventState);
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    console.log(value);
-
     setEventState((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleDateChange = (date, name) => {
-    // const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
     console.log(date);
     setEventState((prev) => ({ ...prev, [name]: date }));
   };
 
+  const formatDate = (date) => {
+    const rawDate = new Date(date);
+
+    const formattedDate = format(rawDate, "yyyy-MM-dd'T'HH:mm");
+    return formattedDate;
+  };
+
   const submitEventForm = async (e) => {
     e.preventDefault();
+    console.log(eventState);
+    const newEvent = {
+      ...eventState,
+      id: uuidv4(),
+      startDatetime: formatDate(eventState.startDatetime),
+      endDatetime: formatDate(eventState.endDatetime),
+    };
+    console.log(newEvent);
+    setEvents((prev) => [...prev, newEvent]);
+    navigate("/", { replace: true });
   };
 
   return (
@@ -76,6 +102,7 @@ const AddEvent = () => {
             id="title"
             placeholder="Add title"
             onChange={handleChange}
+            required
           />
         </div>
 
@@ -124,10 +151,13 @@ const AddEvent = () => {
               onChange={handleChange}
               defaultValue={eventState.tag}
               defaultChecked={eventState.tag}
+              required
             >
-              <option value="personal">Personal</option>
-              <option value="home">Home</option>
-              <option value="work">Work</option>
+              {tagsArr.map((tag) => (
+                <option key={tag} value={tag.toLowerCase()}>
+                  {tag}
+                </option>
+              ))}
             </select>
           </div>
         </div>
