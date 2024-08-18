@@ -2,6 +2,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import "./App.css";
 import Calendar from "./components/Calendar";
 import Events from "./components/Events";
+import { Link } from "react-router-dom";
 
 function App() {
   return (
@@ -19,11 +20,11 @@ function App() {
       </div>
 
       <div className="add-event-btn">
-        <button>
+        <Link to={"/addevent"}>
           <PlusIcon
             style={{ width: "2.4rem", height: "2.4rem", color: "blue" }}
           />
-        </button>
+        </Link>
       </div>
     </div>
   );

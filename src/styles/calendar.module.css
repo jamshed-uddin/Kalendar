@@ -4,10 +4,10 @@
   align-items: center;
   margin-bottom: 2rem;
 }
-.nextPrevBtn {
+.nextPrevCurrentDate {
   display: flex;
-  align-items: center;
-  gap: 2rem;
+  align-items: start;
+  gap: 1rem;
 }
 
 .daysNameHeader {
@@ -57,25 +57,6 @@
   background-color: blue;
   border-radius: 100%;
   display: block;
-}
-
-.dayTwo {
-  grid-column-start: 2;
-}
-.dayThree {
-  grid-column-start: 3;
-}
-.dayFour {
-  grid-column-start: 4;
-}
-.dayFive {
-  grid-column-start: 5;
-}
-.daySix {
-  grid-column-start: 6;
-}
-.daySeven {
-  grid-column-start: 7;
 }
 
 /* mobile device styles */

@@ -10,7 +10,6 @@ import {
   isSameDay,
   isWithinInterval,
   parse,
-  parseISO,
   startOfToday,
 } from "date-fns";
 import { useState } from "react";
@@ -23,7 +22,7 @@ const {
   daysNameHeader,
   daysContainer,
   dayCell,
-  nextPrevBtn,
+  nextPrevCurrentDate,
   selectedCell,
   marker,
 } = calendarStyles;
@@ -50,17 +49,17 @@ const Calendar = () => {
 
     setCurrentMonth(format(firstDayOfNextMonth, "MMMM-yyyy"));
   };
-  console.log(selectedDate);
 
   return (
     <div>
       {/* calendar header */}
       <div className={`${calendarHeader}`}>
-        <h2 className="">{format(firstDayOfCurrentMonth, "MMMM yyyy")}</h2>
-        <div className={nextPrevBtn}>
+        <h2 className="">Kalendar</h2>
+        <div className={nextPrevCurrentDate}>
           <button type="button" onClick={previousMonth}>
             <ChevronLeftIcon className="icon" />
           </button>
+          <h4>{format(firstDayOfCurrentMonth, "MMMM yyyy")}</h4>
           <button onClick={nextMonth} type="button">
             <ChevronRightIcon className="icon" />
           </button>

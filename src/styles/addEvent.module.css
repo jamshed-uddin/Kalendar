@@ -1,0 +1,105 @@
+.eventFormHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 2px solid red; */
+  padding: 1rem 0;
+}
+.titleAndSaveContainer {
+  margin-bottom: 2rem;
+}
+
+.saveButton {
+  background-color: blue;
+  color: white;
+  padding: 0.3rem 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 1rem;
+}
+
+.labelStyle {
+  display: block;
+  font-size: 2rem;
+}
+
+.inputStyle {
+  font-size: 1.5rem;
+  border: 0;
+  border-bottom: 1.5px solid black;
+  width: 100%;
+  padding: 0.3rem 0;
+}
+
+.inputStyle:focus {
+  outline: 0;
+}
+
+.datePickerContainer {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.datePickerContainer > div {
+  flex-grow: 1;
+  width: 100%;
+}
+
+.datePickerInput {
+  font-size: 1.2rem;
+  border: 0;
+  border-bottom: 1.5px solid black;
+  width: 100%;
+  min-width: 20rem;
+}
+
+.selectInput {
+  font-size: 1.2rem;
+  border: 0;
+  border-bottom: 1.5px solid black;
+  width: 100%;
+  /* padding: 0.3rem 0; */
+}
+
+.descriptionInput > textarea {
+  font-size: 1.2rem;
+  border: 0;
+  border-bottom: 1.5px solid black;
+  width: 100%;
+  resize: none;
+}
+
+.selectInput:focus,
+.datePickerInput:focus,
+textarea:focus {
+  outline: 0;
+}
+
+@media (max-width: 768px) {
+  .inputStyle,
+  .selectInput,
+  .datePickerInput,
+  textarea {
+    font-size: 1.2rem;
+  }
+
+  .labelStyle {
+    margin-bottom: 0.5rem;
+    font-size: 1.7rem;
+  }
+  .titleAndSaveContainer {
+    margin-bottom: 1rem;
+  }
+
+  .datePickerContainer {
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  .datePickerContainer > div {
+    margin-bottom: 1rem;
+    width: 100%;
+  }
+}
