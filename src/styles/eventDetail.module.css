@@ -18,3 +18,27 @@
   margin-top: 1rem;
   font-size: 1.4rem;
 }
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  justify-content: end;
+}
+
+.modalButtons > button {
+  background-color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 0.7rem;
+}
+
+.cancel {
+  border: 1px solid black;
+}
+
+.deleteBtn {
+  color: red;
+  border: 1px solid red;
+}
