@@ -4,6 +4,7 @@ import SingleEvent from "./SingleEvent";
 import eventStyles from "../styles/event.module.css";
 import { format, isDate, isSameDay, isWithinInterval } from "date-fns";
 import { CalendarDateRangeIcon } from "@heroicons/react/24/outline";
+import toast, { Toaster } from "react-hot-toast";
 
 const { eventsHeader } = eventStyles;
 const tagsArr = [
@@ -28,28 +29,52 @@ const Events = () => {
   const [eventsError, setEventsError] = useState(false);
 
   useEffect(() => {
+    // loading filtered events from local state regardless the api response(success or failure)
+    const loadFilteredEvents = () => {
+      // filtering events and setting to event state
+      const filteredEvents = events.filter((event) => {
+        const isDateMatch =
+          isWithinInterval(selectedDate, {
+            start: event.startDatetime,
+            end: event.endDatetime,
+          }) || isSameDay(selectedDate, event.startDatetime);
+
+        if (tag === "All") {
+          return isDateMatch;
+        } else {
+          return isDateMatch && event.tag === tag;
+        }
+      });
+      setFilteredEvents(filteredEvents);
+    };
+
     setEventsLoading(true);
     const loadEvents = async () => {
       try {
         const events = await getEvents(tag, selectedDate);
-
-        setFilteredEvents(events);
+        loadFilteredEvents();
         setEventsLoading(false);
       } catch (error) {
+        toast.error("Failed to load events");
+        loadFilteredEvents();
         setEventsError(true);
         setEventsLoading(false);
       }
     };
 
     loadEvents();
-  }, [tag, selectedDate, getEvents]);
+  }, [tag, selectedDate, events, getEvents]);
 
   return (
     <div>
+      <Toaster></Toaster>
       <div className={eventsHeader}>
         <h3>
           Events on <br /> {format(selectedDate, "MMMM dd, yyyy")}
         </h3>
+        <label style={{ display: "none" }} htmlFor="tag">
+          Tags
+        </label>
         <select
           disabled={eventsLoading}
           name="tag"
@@ -70,8 +95,6 @@ const Events = () => {
       <div>
         {eventsLoading ? (
           <p>Loading...</p>
-        ) : eventsError ? (
-          <p>Something went wrong!</p>
         ) : filteredEvents.length ? (
           filteredEvents.map((event, index) => (
             <SingleEvent key={index} event={event} />

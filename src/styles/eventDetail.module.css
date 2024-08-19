@@ -42,3 +42,13 @@
   color: red;
   border: 1px solid red;
 }
+
+.eventDates {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .eventDates {
+    font-size: 1rem;
+  }
+}

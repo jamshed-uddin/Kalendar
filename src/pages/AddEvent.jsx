@@ -6,7 +6,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import toast, { Toaster } from "react-hot-toast";
 
 const {
@@ -36,28 +36,44 @@ const tagsArr = [
 const AddEvent = () => {
   const { id } = useParams();
 
-  const { selectedDate, setEvents, getSingleEvent, addEvent, updateEvent } =
-    useData();
+  const {
+    events,
+    selectedDate,
+    setEvents,
+    getSingleEvent,
+    addEvent,
+    updateEvent,
+  } = useData();
   const [eventLoading, setEventLoading] = useState(false);
+  const [addEventLoading, setAddEventLoading] = useState(false);
   const [eventState, setEventState] = useState({
     title: "",
     startDatetime: selectedDate,
     endDatetime: selectedDate,
-    tag: tagsArr.at(0),
+    tag: "",
     description: "",
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) return;
+    const loadEventFromLocal = () => {
+      const singleEvent = events.find((event) => event.id === id);
+      setEventState(singleEvent);
+    };
     setEventLoading(true);
     const loadEvent = async () => {
-      const event = await getSingleEvent(id);
-      setEventState(event);
-      setEventLoading(false);
+      try {
+        const response = await getSingleEvent(id);
+        loadEventFromLocal();
+        setEventLoading(false);
+      } catch (error) {
+        loadEventFromLocal();
+        setEventLoading(false);
+      }
     };
     loadEvent();
-  }, [getSingleEvent, id]);
+  }, [events, getSingleEvent, id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,21 +81,19 @@ const AddEvent = () => {
   };
 
   const handleDateChange = (date, name) => {
-    console.log(date);
+    const formattedDate = date.toISOString();
+
     setEventState((prev) => {
       if (name === "startDatetime") {
-        return { ...prev, startDatetime: date, endDatetime: date };
+        return {
+          ...prev,
+          startDatetime: formattedDate,
+          endDatetime: formattedDate,
+        };
       }
 
-      return { ...prev, [name]: date };
+      return { ...prev, [name]: formattedDate };
     });
-  };
-
-  const formatDate = (date) => {
-    const rawDate = new Date(date);
-
-    const formattedDate = format(rawDate, "yyyy-MM-dd'T'HH:mm");
-    return formattedDate;
   };
 
   const submitEventForm = async (e) => {
@@ -88,26 +102,45 @@ const AddEvent = () => {
     const newEvent = {
       ...eventState,
       id: uuidv4(),
-      startDatetime: formatDate(eventState.startDatetime),
-      endDatetime: formatDate(eventState.endDatetime),
+    };
+
+    // updating the event in local regardless the mock api response
+    const updateEventInLocal = () => {
+      setEvents((prev) =>
+        prev.map((event) =>
+          event.id === id ? { ...event, ...eventState } : event
+        )
+      );
     };
 
     try {
+      setAddEventLoading(true);
+      // if id is true event form is in edit mode
       if (id) {
-        console.log("update");
         await updateEvent(id, eventState);
+        // updating local state
+        updateEventInLocal();
+        setAddEventLoading(false);
         return navigate("/", { replace: true });
       } else {
-        console.log("add");
-        await addEvent(eventState);
+        await addEvent(newEvent);
+        // updating local state
+        setEvents((prev) => [...prev, newEvent]);
+        setAddEventLoading(false);
         return navigate("/", { replace: true });
       }
     } catch (error) {
+      // updating the local state even when there is an error in mock api call. remove when it's the real api
+      if (id) {
+        updateEventInLocal();
+      } else {
+        setEvents((prev) => [...prev, newEvent]);
+      }
+      setAddEventLoading(false);
       toast.error("Something went wrong! Try again.");
+      navigate("/", { replace: true });
     }
   };
-
-  console.log(eventState);
 
   return (
     <div>
@@ -116,10 +149,16 @@ const AddEvent = () => {
         {/* event form header */}
         <div className={eventFormHeader}>
           <div>
-            <ArrowLeftIcon className="icon" />
+            <button type="button" onClick={() => navigate(-1)}>
+              <ArrowLeftIcon className="icon" />
+            </button>
           </div>
           <div>
-            <button type="submit" className={saveButton}>
+            <button
+              disabled={addEventLoading || eventLoading}
+              type="submit"
+              className={saveButton}
+            >
               Save
             </button>
           </div>

@@ -18,6 +18,11 @@
   border-radius: 1rem;
 }
 
+.saveButton:disabled {
+  opacity: 60%;
+  cursor: not-allowed;
+}
+
 .labelStyle {
   display: block;
   font-size: 2rem;

@@ -6,6 +6,7 @@ import EventDates from "../components/EventDates";
 import eventDetailStyle from "../styles/eventDetail.module.css";
 import { PencilIcon, TagIcon, TrashIcon } from "@heroicons/react/24/outline";
 import ConfirmModal from "../components/ConfirmModal";
+import LoadingOrError from "../components/LoadingOrError";
 
 const {
   eventDetailContainer,
@@ -13,38 +14,64 @@ const {
   modalButtons,
   deleteBtn,
   cancel,
+  eventDates,
 } = eventDetailStyle;
 const EventDetail = () => {
   const { id } = useParams();
-  const { getSingleEvent, deleteEvent } = useData();
+  const { events, setEvents, getSingleEvent, deleteEvent } = useData();
   const [eventLoading, setEventLoading] = useState(false);
+  const [eventsError, setEventsError] = useState(false);
+
   const [eventDetail, setEventDetail] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    // loading event from local state regardless the api response
+    const loadEventFromLocal = () => {
+      const singleEvent = events.find((event) => event.id === id);
+      setEventDetail(singleEvent);
+    };
+
     setEventLoading(true);
     const loadEvent = async () => {
-      const event = await getSingleEvent(id);
-      setEventDetail(event);
-      setEventLoading(false);
+      try {
+        const response = await getSingleEvent(id);
+        loadEventFromLocal();
+        setEventLoading(false);
+      } catch (error) {
+        loadEventFromLocal();
+        setEventLoading(false);
+        setEventsError(true);
+      }
     };
     loadEvent();
-  }, [getSingleEvent, id]);
+  }, [events, getSingleEvent, id]);
 
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
   const deleteEventHandler = async () => {
-    await deleteEvent(id);
-    closeModal();
-    navigate("/", { replace: true });
+    try {
+      await deleteEvent(id);
+      closeModal();
+      setEvents((prev) => prev.filter((event) => event.id !== id));
+      navigate("/", { replace: true });
+    } catch (error) {
+      closeModal();
+      setEvents((prev) => prev.filter((event) => event.id !== id));
+      navigate("/", { replace: true });
+    }
   };
 
   if (eventLoading) {
-    return <div>Loading...</div>;
+    return <LoadingOrError useFor="loading" />;
   }
+
+  // if (eventsError) {
+  //   return <LoadingOrError useFor="error" />;
+  // }
 
   return (
     <div className={eventDetailContainer}>
@@ -83,7 +110,7 @@ const EventDetail = () => {
         </h3>
       )}
 
-      <div style={{ fontSize: "1.5rem" }}>
+      <div className={eventDates}>
         {eventDetail?.startDatetime && eventDetail?.endDatetime && (
           <EventDates
             startDateTime={eventDetail?.startDatetime}

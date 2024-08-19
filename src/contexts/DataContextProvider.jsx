@@ -1,3 +1,4 @@
+import axios from "axios";
 import { isSameDay, isWithinInterval, startOfToday } from "date-fns";
 import React, { createContext, useEffect, useState } from "react";
 
@@ -14,44 +15,43 @@ const DataContextProvider = ({ children }) => {
   }, [events]);
 
   const getEvents = async (tag = "All", selectedDate) => {
-    const filteredEvents = events.filter((event) => {
-      const isDateMatch =
-        isWithinInterval(selectedDate, {
-          start: event.startDatetime,
-          end: event.endDatetime,
-        }) || isSameDay(selectedDate, event.startDatetime);
+    const { data } = await axios.get(
+      "https://kalendar.free.beeceptor.com/api/events"
+    );
 
-      if (tag === "All") {
-        return isDateMatch;
-      } else {
-        return isDateMatch && event.tag === tag;
-      }
-    });
-
-    return filteredEvents;
+    return data;
   };
 
   const addEvent = async (body) => {
-    try {
-      setEvents((prev) => [...prev, body]);
-    } catch (error) {
-      throw error;
-    }
+    const response = await axios.post(
+      "https://kalendar.free.beeceptor.com/api/events",
+      body
+    );
+    return response;
   };
 
   const getSingleEvent = async (id) => {
-    const singleEvent = events.find((event) => event.id === id);
-    return singleEvent;
+    const response = await axios.get(
+      "https://kalendar.free.beeceptor.com/api/events/1234"
+    );
+
+    return response;
   };
 
   const updateEvent = async (id, body) => {
-    setEvents((prev) =>
-      prev.map((event) => (event.id === id ? { ...event, ...body } : event))
+    const response = await axios.put(
+      "https://kalendar.free.beeceptor.com/api/events/1234",
+      body
     );
+
+    return response;
   };
 
   const deleteEvent = async (id) => {
-    setEvents((prev) => prev.filter((event) => event.id !== id));
+    const response = await axios.delete(
+      "https://kalendar.free.beeceptor.com/api/events/1234"
+    );
+    return response;
   };
 
   const value = {

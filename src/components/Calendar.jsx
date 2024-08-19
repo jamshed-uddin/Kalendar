@@ -49,7 +49,6 @@ const Calendar = () => {
 
     setCurrentMonth(format(firstDayOfNextMonth, "MMMM-yyyy"));
   };
-  console.log(daysOfMonth.at(2).toISOString());
 
   return (
     <div>
