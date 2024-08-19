@@ -25,10 +25,12 @@ const SingleEvent = ({ event }) => {
             </p>
           )}
           <div style={{ fontSize: "0.9rem", marginTop: "0.3rem" }}>
-            <EventDates
-              endDateTime={event?.endDatetime}
-              startDateTime={event?.startDatetime}
-            />
+            {event.startDatetime && event.endDatetime && (
+              <EventDates
+                endDateTime={event?.endDatetime}
+                startDateTime={event?.startDatetime}
+              />
+            )}
           </div>
         </div>
       </div>

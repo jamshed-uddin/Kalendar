@@ -47,6 +47,7 @@ const AddEvent = () => {
   const [eventLoading, setEventLoading] = useState(false);
   const [addEventLoading, setAddEventLoading] = useState(false);
   const [eventState, setEventState] = useState({
+    id: "",
     title: "",
     startDatetime: selectedDate,
     endDatetime: selectedDate,

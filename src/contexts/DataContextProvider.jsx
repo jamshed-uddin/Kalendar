@@ -8,7 +8,9 @@ const localStorageEvents = JSON.parse(localStorage.getItem("events"));
 
 const DataContextProvider = ({ children }) => {
   const [events, setEvents] = useState(localStorageEvents || []);
-  const [selectedDate, setSelectedDate] = useState(startOfToday());
+  const [selectedDate, setSelectedDate] = useState(
+    startOfToday().toISOString()
+  );
 
   useEffect(() => {
     localStorage.setItem("events", JSON.stringify(events));
